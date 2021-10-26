@@ -1,0 +1,42 @@
+1. <index.jsp> "main.do" 로 가라
+2. <main/main.jsp> 로그인 memberLoginForm.do로 가라. 이때 로그인이 성공하면 memberSelectList.do로 갈거야.
+3. <memberLoginForm> member.Login.do로 가라
+4. <memberLogin>
+  1)세션
+  2)MemberServiceImpl(쿼리문 메소드) 클래스를 memberDao에 담는다.
+  3)memberVO 클래스를 vo에 담는다.
+  4)파라미터 매개변수(=jsp페이지에서 입력값으로 받은 것)로 받은 id를 vo에 담는다.
+  5)파라미터 매개변수(=jsp페이지에서 입력값으로 받은 것)로 받은 password를 vo에 담는다.
+  6)vo를 매개변수로 memberDao(impl클래스)의 memberLogin 메소드를 변수 vo에 담는다.
+  7)vo에 담은 이름이 있다면 vo는 member라는 이름으로 request 객체에 담는다.
+    vo에 담은 이름이 있다면 vo에서 받아온 id는 id라는 이름으로 session에 담는다.
+    그리고 페이지는 memberLoginSuccess로 이동한다.
+  8)vo에 담은 이름이 없다면 memberLoginFail로 이동한다.
+  9)page를 반환한한다.
+
+
+1. <index.jsp> "main.do" 로 가라
+2. <main/main.jsp> 로그인 memberLoginForm.do로 가라. 이때 로그인이 성공하면 memberSelectList.do로 갈거야.
+3. <memberSelectList> 
+    1)MemberServiceImpl(쿼리문 메소드) 클래스를 dao에 담는다.
+    2)MemberVO를 ArrayList로 list변수에 담는다.
+    3)dao(impl클래스)의 memberSelectList메소드를 list 변수에 담는다.
+    4)list는 members라는 이름으로 request 객체에 담는다.
+    5)member/memberSelectList jsp페이지를 반환한다.
+    
+    
+<FrontController>이해하기
+1. String을 키값으로, Command라는 클래스를 value값으로 가지는 HashMap을 map이라는 변수로 선언한다.
+2. init: 서블릿을 초기화하는 곳, 즉 실행할 Command 메소드를 "등록"하는 곳이다.
+         map의 put메소드로 키와 값을 넣는다. main.do, memberSelectList.do, memberLoginForm.do, memberLogin.do를 등록
+3. service: 요청을 분석하고 처리하는 곳, 즉 controller를 만드는 곳이다.
+   1)한글 깨짐 방지
+   2)uri: 요청명령 분석하기 위해 uri를 구한다.
+   3)contextPath: 프로젝트의 루트를 찾는다.
+   4)page: 실제 호출한 페이지를 찾는다. contextPath(루트)의 길이만큼 잘라서 uri에 붙여주고 그것을 page 변수에 담는다.
+   5)map에서 page를 찾아서 Command클래스 타입의 command 변수에 담는다. 이 때의 Command 클래스에는 run메소드가 있다.
+   6)command의 run메소드를 viewPage 변수에 담는다. 이 viewPage는 명령을 실행하고 돌려줄 페이지이다.
+   7)viewPage가 .do로 끝나지 않으면 viewPage는 "WEB-INF/views/" + viewPage(views폴더 밑에 있는 해당하는 jsp 페이지) + ".jsp" 이런 형식으로 실행된다. 
+     이것을 viewResolve라고 한다.
+   8)이제 보여줄 페이지를 호출하면 된다. 호출은 DAO에서 가져온 값을 담고 가는 dispatcher를 통해 실행한다.
+     명령에서 돌아온 값(viewPage)을 dispatcher라는 변수에 담는다. 
